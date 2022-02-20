@@ -27,5 +27,8 @@ class Wideresnet40Config(ArchConfig):
     widening_factor: int = MISSING
     droprate: float = MISSING
 
+@dataclass
+class CLIPConfig(ArchConfig):
+    _target_: str = "fhmap.factory.archs.clip.CLIP"
 
 # NOTE: If you want to add your architecture, please implement YourCustomArchConfig class here.

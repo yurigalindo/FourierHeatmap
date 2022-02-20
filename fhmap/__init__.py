@@ -4,6 +4,7 @@ from typing import Dict, List, Tuple
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
 
 from .fourier.heatmap import eval_fourier_heatmap  # noqa
 
@@ -67,8 +68,15 @@ def eval_mean_errors(
 
     for x, t in loader:
         x, t = x.to(device), t.to(device)
-
+        # print("true label")
+        # print(t)
+        # print(torch.transpose(torch.squeeze(x.cpu()),0,2))
+        # plt.imshow(torch.transpose(torch.squeeze(x.cpu()),0,2))
+        # #plt.savefig(f'/home/yurigalindo/FourierHeatmap/sanitytests')
+        # #plt.close("all")
         output = arch(x)
+        # print("prediction")
+        # print(output)
         for k, err in zip(topk, calc_errors(output, t, topk=topk)):
             err_dict[k].append(err.item())
 

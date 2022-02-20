@@ -52,6 +52,7 @@ cs.store(name="eval_fhmap", node=EvalFhmapConfig)
 cs.store(group="arch", name="resnet50", node=schema.Resnet50Config)
 cs.store(group="arch", name="resnet56", node=schema.Resnet56Config)
 cs.store(group="arch", name="wideresnet40", node=schema.Wideresnet40Config)
+cs.store(group="arch", name="CLIP", node=schema.CLIPConfig)
 # NOTE: If you want to add your custom architecture, please add YourCustomArchConfig as a node here.
 # dataset
 cs.store(group="dataset", name="cifar10", node=schema.Cifar10Config)
@@ -95,7 +96,13 @@ def eval_fhmap(cfg: EvalFhmapConfig) -> None:
 
     # Setup model
     arch = instantiate(cfg.arch, num_classes=datamodule.num_classes)
-    arch.load_state_dict(torch.load(weightpath))
+    # weights = torch.load(weightpath) #load the weights
+    # weights = weights['state_dict'] #get the part that is actually the state_dict
+    # state_dict = {}
+    # for key in weights.keys():
+    #     #create a new dict removing the 'module.' in the beginning of the names
+    #     state_dict[key.replace('module.','')]=weights[key]
+    # arch.load_state_dict(state_dict)
     arch = arch.to(device)
     arch.eval()
     logger.info("architecture setup: done.")
