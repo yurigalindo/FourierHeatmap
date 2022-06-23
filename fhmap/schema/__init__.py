@@ -3,7 +3,8 @@ from .arch import (  # noqa # NOTE: If you want to add your architecture, please
     Resnet50Config,
     Resnet56Config,
     Wideresnet40Config,
-    CLIPConfig
+    CLIPConfig,
+    ResnetImagenet100Config
 )
 from .dataset import (  # noqa # NOTE: If you want to add your dataset, please add YourCustomDatasetConfig class in this line.
     Cifar10Config,

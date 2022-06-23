@@ -53,6 +53,7 @@ cs.store(group="arch", name="resnet50", node=schema.Resnet50Config)
 cs.store(group="arch", name="resnet56", node=schema.Resnet56Config)
 cs.store(group="arch", name="wideresnet40", node=schema.Wideresnet40Config)
 cs.store(group="arch", name="CLIP", node=schema.CLIPConfig)
+cs.store(group="arch", name="resnet50_im100", node=schema.ResnetImagenet100Config)
 # NOTE: If you want to add your custom architecture, please add YourCustomArchConfig as a node here.
 # dataset
 cs.store(group="dataset", name="cifar10", node=schema.Cifar10Config)

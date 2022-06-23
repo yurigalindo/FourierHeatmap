@@ -31,4 +31,7 @@ class Wideresnet40Config(ArchConfig):
 class CLIPConfig(ArchConfig):
     _target_: str = "fhmap.factory.archs.clip.CLIP"
 
+@dataclass
+class ResnetImagenet100Config(ArchConfig):
+    _target_: str = "fhmap.factory.archs.resnet_pre.ResnetImagenet100"
 # NOTE: If you want to add your architecture, please implement YourCustomArchConfig class here.
