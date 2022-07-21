@@ -1,0 +1,1 @@
+poetry run python fhmap/apps/eval_fhmap.py dataset=cifar10 weightpath=x arch=CLIP eps=4.0 batch_size=64

@@ -1,0 +1,1 @@
+poetry run python fhmap/apps/eval_fhmap.py dataset=cifar10 arch=resnet56 weightpath=/home/yurigalindo/FourierHeatmap/resnet56-4bfd9763.th eps=4.0 batch_size=64

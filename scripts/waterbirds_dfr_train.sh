@@ -1,0 +1,1 @@
+poetry run python fhmap/apps/eval_fhmap.py dataset=waterbirds arch=dfr weightpath=/home/yurigalindo/FourierHeatmap/data/dfr_pickles/train eps=32 batch_size=32 ignore_edge_size=49 topk=[1]

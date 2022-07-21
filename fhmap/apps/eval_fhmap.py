@@ -54,11 +54,16 @@ cs.store(group="arch", name="resnet56", node=schema.Resnet56Config)
 cs.store(group="arch", name="wideresnet40", node=schema.Wideresnet40Config)
 cs.store(group="arch", name="CLIP", node=schema.CLIPConfig)
 cs.store(group="arch", name="resnet50_im100", node=schema.ResnetImagenet100Config)
+cs.store(group="arch", name="dfr", node=schema.DFRConfig)
+cs.store(group="arch", name="resnet2", node=schema.ResnetWeights2)
+
+
 # NOTE: If you want to add your custom architecture, please add YourCustomArchConfig as a node here.
 # dataset
 cs.store(group="dataset", name="cifar10", node=schema.Cifar10Config)
 cs.store(group="dataset", name="imagenet100", node=schema.Imagenet100Config)
 cs.store(group="dataset", name="imagenet", node=schema.ImagenetConfig)
+cs.store(group="dataset", name="waterbirds", node=schema.WaterBirdsConfig)
 # NOTE: If you want to add your custom dataset, please add YourCustomDatasetConfig as a node here.
 # env
 cs.store(group="env", name="default", node=schema.DefaultEnvConfig)
@@ -103,7 +108,7 @@ def eval_fhmap(cfg: EvalFhmapConfig) -> None:
     # for key in weights.keys():
     #     #create a new dict removing the 'module.' in the beginning of the names
     #     state_dict[key.replace('module.','')]=weights[key]
-    # arch.load_state_dict(state_dict)
+    arch.load_state_dict(weightpath)
     arch = arch.to(device)
     arch.eval()
     logger.info("architecture setup: done.")

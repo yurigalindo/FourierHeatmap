@@ -8,6 +8,10 @@ import pathlib
 from dataclasses import dataclass
 from typing import Final, Optional, Tuple
 
+import pandas as pd
+from PIL import Image
+import os
+import numpy as np
 import pytorch_lightning as pl
 import torch
 import torchvision
@@ -47,6 +51,14 @@ class Imagenet100Stats(DatasetStats):
 @dataclass(frozen=True)
 class ImagenetStats(DatasetStats):
     num_classes: int = 1000
+    input_size: int = 224
+    mean: Tuple[float, float, float] = (0.485, 0.456, 0.406)
+    std: Tuple[float, float, float] = (0.229, 0.224, 0.225)
+
+@dataclass(frozen=True)
+class WaterBirdsStats(DatasetStats):
+    # Must correct
+    num_classes: int = 2
     input_size: int = 224
     mean: Tuple[float, float, float] = (0.485, 0.456, 0.406)
     std: Tuple[float, float, float] = (0.229, 0.224, 0.225)
@@ -276,5 +288,75 @@ class ImagenetDataModule(BaseDataModule):
             transform=transform,
         )
 
+class WaterBirdsDataModule(BaseDataModule):
+    def __init__(self, batch_size: int, num_workers: int, root: pathlib.Path) -> None:
+        super().__init__(batch_size, num_workers, root)
+        self.dataset_stats: DatasetStats = WaterBirdsStats()
+        self.root: Final[pathlib.Path] = root / "waterbirds"
+
+    def prepare_data(self, *args, **kwargs) -> None:
+        # """check if Waterbirds dataset exists (DO NOT assign train/val here)."""
+        # if not (self.root / "test").exists():
+        #     raise ValueError(
+        #         f"Please download and set WaterBirds test data under {self.root}."
+        #     )
+        pass
+
+    def setup(self, stage=None, *args, **kwargs) -> None:
+        """Assign test dataset"""
+        transform = (
+            self._get_transform(kwargs["basis"])
+            if "basis" in kwargs
+            else self._get_transform()
+        )
+        self.test_dataset: Dataset = WaterBirdsDataset(
+            basedir=self.root,
+            split = "test",
+            transform=transform,
+        )
 
 # NOTE: If you want to add your dataset, please implement YourCustomDataModule class here.
+
+class WaterBirdsDataset(Dataset):
+    def __init__(self, basedir, split="train", transform=None):
+        try:
+            split_i = ["train", "val", "test"].index(split)
+        except ValueError:
+            raise(f"Unknown split {split}")
+        metadata_df = pd.read_csv(os.path.join(basedir, "metadata.csv"))
+        print(len(metadata_df))
+        self.metadata_df = metadata_df[metadata_df["split"] == split_i]
+        print(len(self.metadata_df))
+        self.basedir = basedir
+        self.transform = transform
+        self.y_array = self.metadata_df['y'].values
+        self.p_array = self.metadata_df['place'].values
+        self.n_classes = np.unique(self.y_array).size
+        self.confounder_array = self.metadata_df['place'].values
+        self.n_places = np.unique(self.confounder_array).size
+        self.group_array = (self.y_array * self.n_places + self.confounder_array).astype('int')
+        self.n_groups = self.n_classes * self.n_places
+        self.group_counts = (
+                torch.arange(self.n_groups).unsqueeze(1) == torch.from_numpy(self.group_array)).sum(1).float()
+        self.y_counts = (
+                torch.arange(self.n_classes).unsqueeze(1) == torch.from_numpy(self.y_array)).sum(1).float()
+        self.p_counts = (
+                torch.arange(self.n_places).unsqueeze(1) == torch.from_numpy(self.p_array)).sum(1).float()
+        self.filename_array = self.metadata_df['img_filename'].values
+
+    def __len__(self):
+        return len(self.metadata_df)
+
+    def __getitem__(self, idx):
+        y = self.y_array[idx]
+        # g = self.group_array[idx]
+        # p = self.confounder_array[idx]
+
+        img_path = os.path.join(self.basedir, self.filename_array[idx])
+        img = Image.open(img_path).convert('RGB')
+        # img = read_image(img_path)
+        # img = img.float() / 255.
+
+        if self.transform:
+            img = self.transform(img)
+        return img, y #, g, p

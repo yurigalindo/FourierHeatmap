@@ -34,4 +34,12 @@ class CLIPConfig(ArchConfig):
 @dataclass
 class ResnetImagenet100Config(ArchConfig):
     _target_: str = "fhmap.factory.archs.resnet_pre.ResnetImagenet100"
+
+@dataclass
+class ResnetWeights2(ArchConfig):
+    _target_: str = "fhmap.factory.archs.resnet_weights.ResnetWeight"
+@dataclass
+class DFRConfig(ArchConfig):
+    _target_: str = "fhmap.factory.archs.dfr.DFR"
+
 # NOTE: If you want to add your architecture, please implement YourCustomArchConfig class here.

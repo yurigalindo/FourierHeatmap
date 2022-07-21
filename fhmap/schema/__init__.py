@@ -4,12 +4,15 @@ from .arch import (  # noqa # NOTE: If you want to add your architecture, please
     Resnet56Config,
     Wideresnet40Config,
     CLIPConfig,
-    ResnetImagenet100Config
+    ResnetImagenet100Config,
+    DFRConfig,
+    ResnetWeights2,
 )
 from .dataset import (  # noqa # NOTE: If you want to add your dataset, please add YourCustomDatasetConfig class in this line.
     Cifar10Config,
     DatasetConfig,
     Imagenet100Config,
     ImagenetConfig,
+    WaterBirdsConfig,
 )
 from .env import DefaultEnvConfig, EnvConfig  # noqa

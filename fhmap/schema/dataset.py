@@ -22,5 +22,7 @@ class Imagenet100Config(DatasetConfig):
 class ImagenetConfig(DatasetConfig):
     _target_: str = "fhmap.factory.dataset.ImagenetDataModule"
 
-
+@dataclass()
+class WaterBirdsConfig(DatasetConfig):
+    _target_: str = "fhmap.factory.dataset.WaterBirdsDataModule"
 # NOTE: If you want to add your dataset, please implement YourCustomDatasetConfig class here.
